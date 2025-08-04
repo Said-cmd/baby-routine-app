@@ -1,13 +1,16 @@
 # Baby Routine App
 
-A mobile app for tracking and predicting a baby’s daily routine, including sleep, feeding, and activity patterns.
+A mobile app for tracking and predicting a baby’s daily routine, including sleep, feeding, and activity patterns. This repository supports the final report submitted for the ELEC0036 Third-Year Project at UCL.
+
+## Screenshots & Demonstration
+This GitHub repository contains the source code only. Screenshots, user interface walkthroughs, and Firebase configuration examples are included in the final submitted report.
 
 ## Features
 
 - Track daily baby care events (sleep, feed, diaper, activity)
 - Get reminder notifications for key routines
 - Visualise trends with charts
-- Multi-user support with role-based access
+- Planned multi-user support with role-based access (Firebase integration is partially implemented but disabled in this beta version)
 - Local + cloud data storage
 
 ## Tech Stack
