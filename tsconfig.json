@@ -24,5 +24,6 @@
     "nativewind-env.d.ts",
     ".expo/types/**/*.ts"
   ],
+  "exclude": ["evaluation"],
   "extends": "expo/tsconfig.base"
 }
