@@ -54,7 +54,7 @@ export class SleepPredictionService {
       }).sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
       // Calculate average interval between sleep sessions
-      const averageSleepInterval = this.calculateAverageInterval(weekSleepActivities);
+      const averageSleepInterval = this.calculateAverageWakeWindow(weekSleepActivities);
       
       // Predict next nap time
       const nextNapPrediction = this.predictNextNapTime(sleepActivities, averageSleepInterval);
@@ -137,6 +137,48 @@ export class SleepPredictionService {
     );
 
     const average = filteredIntervals.reduce((sum, interval) => sum + interval, 0) / filteredIntervals.length;
+    return Math.round(average);
+  }
+
+  /**
+   * Calculate average wake window (gap from previous sleep end to next sleep start)
+   */
+  private static calculateAverageWakeWindow(sleepActivities: any[]): number {
+    if (sleepActivities.length < 2) {
+      return 180; // Default 3 hours if insufficient data
+    }
+
+    const windows: number[] = [];
+
+    for (let i = 1; i < sleepActivities.length; i++) {
+      const previous = sleepActivities[i - 1];
+      const previousEndTime = new Date(previous.timestamp).getTime() + (previous.duration || 0) * 60 * 1000;
+      const currentStartTime = new Date(sleepActivities[i].timestamp).getTime();
+      const windowMinutes = (currentStartTime - previousEndTime) / (1000 * 60);
+
+      // Only consider reasonable wake windows (30 minutes to 8 hours)
+      if (windowMinutes >= 30 && windowMinutes <= 480) {
+        windows.push(windowMinutes);
+      }
+    }
+
+    if (windows.length === 0) {
+      return 180; // Default 3 hours
+    }
+
+    // Calculate average, removing outliers
+    windows.sort((a, b) => a - b);
+    const q1 = windows[Math.floor(windows.length * 0.25)];
+    const q3 = windows[Math.floor(windows.length * 0.75)];
+    const iqr = q3 - q1;
+    const lowerBound = q1 - 1.5 * iqr;
+    const upperBound = q3 + 1.5 * iqr;
+
+    const filteredWindows = windows.filter(window =>
+      window >= lowerBound && window <= upperBound
+    );
+
+    const average = filteredWindows.reduce((sum, window) => sum + window, 0) / filteredWindows.length;
     return Math.round(average);
   }
 
