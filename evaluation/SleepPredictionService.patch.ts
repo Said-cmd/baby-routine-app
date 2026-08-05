@@ -1,17 +1,3 @@
-// PROPOSED FIX for services/SleepPredictionService.ts
-//
-// Defect: calculateAverageInterval() measures ONSET-TO-ONSET intervals
-// (timestamp[i] - timestamp[i-1]), which already include the duration of
-// sleep i-1. predictNextNapTime() then adds that interval to the WAKE-UP
-// time (timestamp + duration), so the sleep duration is counted twice and
-// every prediction is systematically late by ~1 mean sleep length.
-//
-// Measured: mean signed bias +75.2 min vs mean nap duration 78.1 min.
-// After fix: bias +0.1 min, MAE 75.2 -> 16.5 min (regular-routine regime).
-//
-// Fix: measure the WAKE WINDOW (gap from waking to next onset), which is
-// the quantity the prediction step actually needs.
-
 private static calculateAverageWakeWindow(sleepActivities: any[]): number {
   if (sleepActivities.length < 2) {
     return 180; // Default 3 hours if insufficient data
@@ -45,11 +31,3 @@ private static calculateAverageWakeWindow(sleepActivities: any[]): number {
     filtered.reduce((sum, w) => sum + w, 0) / filtered.length
   );
 }
-
-// In calculateSleepMetrics(), replace:
-//   const averageSleepInterval = this.calculateAverageInterval(weekSleepActivities);
-// with:
-//   const averageSleepInterval = this.calculateAverageWakeWindow(weekSleepActivities);
-//
-// predictNextNapTime() needs no change - it is already correctly anchored
-// to wake-up time; it was simply being fed the wrong statistic.
