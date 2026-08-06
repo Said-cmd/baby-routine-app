@@ -16,9 +16,9 @@ trial,stimulus_class,stimulus,alert_raised,correct
 15,loud_noncry,clapping,Y,N
 16,loud_noncry,door_closing,Y,N
 17,loud_noncry,running_water,Y,N
-18,loud_noncry,loud_noncry_8,Y,N
-19,loud_noncry,loud_noncry_9,Y,N
-20,loud_noncry,loud_noncry_10,Y,N
+18,loud_noncry,chainsaw,Y,N
+19,loud_noncry,thunder,Y,N
+20,loud_noncry,explosion,Y,N
 21,loud_speech,loud_conversation_1,Y,N
 22,loud_speech,loud_conversation_2,Y,N
 23,loud_speech,loud_conversation_3,Y,N
